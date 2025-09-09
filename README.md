@@ -1,27 +1,26 @@
-Courier Service
+# Courier Service
 
-📌 Overview
+### 📌 **Overview**
 
 This project implements a Courier Service application in Java (Spring Boot).
 
 It supports:
 
-•	Delivery Cost Estimation – calculates final delivery cost for packages, applying discounts using offer codes.
+•	**Delivery Cost Estimation** – calculates final delivery cost for packages, applying discounts using offer codes.
 
-•	Delivery Time Estimation – estimates package delivery times by assigning shipments to vehicles with weight limits and availability.
+•	**Delivery Time Estimation** – estimates package delivery times by assigning shipments to vehicles with weight limits and availability.
 The project uses design patterns such as Builder (for Shipment and Vehicle) and Strategy (for discount calculation).
 It also follows SOLID principles for clean, testable code.
 
-📖 Problem Statement
+### 📖 **Problem Statement**
 
 The project solves two main problems:
 
-
-1️⃣ Delivery Cost Estimation
+#### 1️⃣ Delivery Cost Estimation
 
 •	Apply one offer code per package (OFR001, OFR002, OFR003).
 
-•	Discounts:
+##### •	Discounts:
 
 o	OFR001 → 10% if distance < 200 & weight 70–200.
 
@@ -31,7 +30,7 @@ o	OFR003 → 5% if distance 50–250 & weight 10–150.
 
 •	If no valid code, discount = 0.
 
-Example Input
+##### Example Input
 
 100 3
 
@@ -41,8 +40,7 @@ PKG2 15 5 OFR002
 
 PKG3 10 100 OFR003
 
-
-Example Output
+##### Example Output
 
 PKG1 0 175
 
@@ -50,8 +48,7 @@ PKG2 0 275
 
 PKG3 35 665
 
-
-2️⃣ Delivery Time Estimation
+#### 2️⃣ **Delivery Time Estimation**
 
 •	Vehicles (N) deliver packages at constant speed (S).
 
@@ -61,8 +58,7 @@ PKG3 35 665
 
 •	Shipments maximize vehicle load; heavier shipments are prioritized.
 
-
-Example Input
+##### Example Input
 
 100 5
 
@@ -78,8 +74,7 @@ PKG5 155 95 NA
 
 2 70 200
 
-
-Example Output
+##### Example Output
 
 PKG1 0 750 3.98
 
@@ -91,209 +86,151 @@ PKG4 105 1395 0.85
 
 PKG5 0 2125 4.19
 
-
-🏗️ Project Structure
+### 🏗️ **Project Structure**
 
 src/main/java/com/everesteng/courier
 
-│── CourierApplication.java      # Main Spring Boot app (CLI)
-
-│
-
-├── builder/                     # Builder Pattern
-
-│   ├── ShipmentBuilder.java
-
-│   └── VehicleBuilder.java
-
-│
-
-├── exception/
-
-│   └── CourierServiceException.java
-
-│
-
-├── model/                       # Core domain models
-
-│   ├── Package.java
-
-│   ├── Shipment.java
-
-│   └── Vehicle.java
-
-│
-
-├── service/                     # Business services
-
-│   ├── CourierService.java
-
-│   ├── DiscountService.java
-
-│   ├── ShipmentService.java
-
-│   ├── DeliveryTimeService.java
-
-│   └── VehicleService.java
-
-│
-
-└── strategy/                    # Strategy Pattern for discounts
-
+    │── CourierApplication.java      # Main Spring Boot app (CLI)
+    │
+    ├── builder/                     # Builder Pattern
+    │   ├── ShipmentBuilder.java
+    │   └── VehicleBuilder.java 
+    │
+    ├── exception/
+    │   └── CourierServiceException.java
+    │
+    ├── model/                       # Core domain models
+    │   ├── Package.java
+    │   ├── Shipment.java
+    │   └── Vehicle.java
+    │
+    ├── service/                     # Business services
+    ├── CourierService.java
+    ├── DiscountService.java
+    ├── ShipmentService.java
+    ├── DeliveryTimeService.java
+    └── VehicleService.java
+    │
+    └── strategy/                    # Strategy Pattern for discounts
     ├── DiscountStrategy.java
-    
     ├── NoDiscount.java
-    
     ├── OFR001Discount.java
-    
     ├── OFR002Discount.java
-    
     └── OFR003Discount.java
-    
 
-🧪 Testing
+### 🧪 **Testing**
 
 Unit tests cover:
 
-•	Builders: ShipmentBuilderTest, VehicleBuilderTest
+•	**Builders:** ShipmentBuilderTest, VehicleBuilderTest
 
-•	Models: PackageTest, ShipmentTest, VehicleTest
+•	**Models:** PackageTest, ShipmentTest, VehicleTest
 
-•	Services: CourierServiceTest, DeliveryTimeServiceTest, ShipmentServiceTest, VehicleServiceTest, DiscountServiceTest
+•	**Services:** CourierServiceTest, DeliveryTimeServiceTest, ShipmentServiceTest, VehicleServiceTest, DiscountServiceTest
 
-•	Strategies: DiscountStrategyTest
+•	**Strategies:** DiscountStrategyTest
 
+**Run all tests:**
 
-Run all tests:
+    mvn test
 
-mvn test
+▶️ **Running the Application**
 
-
-▶️ Running the Application
-
-1.	Build the project:
+1.	**Build the project:**
    
-mvn clean install
+    mvn clean install
 
-3.	Run with Spring Boot:
+3.	**Run with Spring Boot:**
    
-mvn spring-boot:run
+    mvn spring-boot:run
 
-5.	Choose mode when prompted:
+5.	**Choose mode when prompted:**
    
-o	1 → Delivery Cost Estimation
+    1 → Delivery Cost Estimation
+    2 → Delivery Time Estimation
 
-o	2 → Delivery Time Estimation
+### ⚙️ **Design Patterns Used**
 
+•	**Builder Pattern** → ShipmentBuilder, VehicleBuilder.
 
-⚙️ Design Patterns Used
+•	**Strategy Pattern** → DiscountStrategy and its implementations.
 
-•	Builder Pattern → ShipmentBuilder, VehicleBuilder.
+### 🏆 **SOLID Principles**
 
-•	Strategy Pattern → DiscountStrategy and its implementations.
+•	**Single Responsibility** → Each service handles one concern.
 
+•	**Open/Closed** → Adding new discounts requires only a new strategy class.
 
-🏆 SOLID Principles
+•	**Liskov Substitution** → Strategies can replace each other.
 
-•	Single Responsibility → Each service handles one concern.
+•	**Interface Segregation** → DiscountStrategy defines only needed behavior.
 
-•	Open/Closed → Adding new discounts requires only a new strategy class.
+•	**Dependency Injection** → Services injected via constructors (Spring Boot).
 
-•	Liskov Substitution → Strategies can replace each other.
+### 📦 **Requirements**
 
-•	Interface Segregation → DiscountStrategy defines only needed behavior.
+* Java 17+
+* Maven 3.8+
+* Spring Boot 3.x
 
-•	Dependency Injection → Services injected via constructors (Spring Boot).
-
-
-📦 Requirements
-
-•	Java 17+
-
-•	Maven 3.8+
-
-•	Spring Boot 3.x
-
-
-Testing
+### **Testing**
 
 This project has comprehensive JUnit 5 unit tests with Mockito for mocking dependencies.
 
-
 The tests validate correctness, robustness, and design compliance across all layers:
 
-✅ Builder Tests
+#### ✅ Builder Tests
 
-•	ShipmentBuilderTest – verifies building shipments with multiple packages, empty shipments, and fluent API chaining.
+* **ShipmentBuilderTest** – verifies building shipments with multiple packages, empty shipments, and fluent API chaining.
 
-•	VehicleBuilderTest – checks vehicle creation with custom values, default values, and method chaining.
-
-
-✅ Model Tests
-
-•	PackageTest – validates constructor constraints (non-null ID, non-negative weight/distance), setter validation, and equality/hashCode.
-
-•	ShipmentTest – tests constructor validation, addPackages(), and setter validations for time and vehicle ID.
-
-•	VehicleTest – ensures constructor and setters reject negative values for ID/availability.
+* **VehicleBuilderTest** – checks vehicle creation with custom values, default values, and method chaining.
 
 
-✅ Service Tests
+#### ✅ Model Tests
+
+1. **PackageTest** – validates constructor constraints (non-null ID, non-negative weight/distance), setter validation, and equality/hashCode.
+2. **ShipmentTest** – tests constructor validation, addPackages(), and setter validations for time and vehicle ID.
+3. **VehicleTest** – ensures constructor and setters reject negative values for ID/availability.
+
+#### ✅ Service Tests
+
+**CourierServiceTest**
+* Uses Mockito to mock dependent services.
+* Verifies final cost calculation (discounts applied correctly).
+* Ensures orchestration of shipment creation, delivery time calculation, and vehicle assignment.
+
+**DeliveryTimeServiceTest**
+* Validates round-trip time calculation for shipments.
+* Verifies per-package delivery times.
+* Confirms error handling for invalid speeds.
+
+**ShipmentServiceTest**
+* Ensures shipments are created correctly under max weight constraints.
+* Validates edge cases (empty lists, overweight packages, invalid limits).
+
+**VehicleServiceTest**
+* Tests vehicle assignment with valid and invalid vehicle counts.
+* Verifies that package delivery times adjust based on vehicle availability.
+
+#### ✅ Discount Strategy Tests
+
+•	**DiscountServiceTest** – validates that each offer code (OFR001, OFR002, OFR003) applies correct discounts, and invalid/NA codes result in no discount.
+
+•	**DiscountStrategyTest** – unit tests for individual discount strategy implementations.
 
 
-•	CourierServiceTest
+### 🔍 **Test Coverage**
 
-o	Uses Mockito to mock dependent services.
-
-o	Verifies final cost calculation (discounts applied correctly).
-
-o	Ensures orchestration of shipment creation, delivery time calculation, and vehicle assignment.
+* Business logic is fully tested (shipment grouping, cost calculation, discount application, vehicle assignment).
+* Validation rules are tested (invalid IDs, negative weights, empty package lists, invalid speeds).
+* Edge cases are covered to ensure reliability.
 
 
-•	DeliveryTimeServiceTest
+**Run tests with:**
 
-o	Validates round-trip time calculation for shipments.
-
-o	Verifies per-package delivery times.
-
-o	Confirms error handling for invalid speeds.
+    mvn test
 
 
-•	ShipmentServiceTest
-
-o	Ensures shipments are created correctly under max weight constraints.
-
-o	Validates edge cases (empty lists, overweight packages, invalid limits).
-
-
-•	VehicleServiceTest
-
-o	Tests vehicle assignment with valid and invalid vehicle counts.
-
-o	Verifies that package delivery times adjust based on vehicle availability.
-
-
-✅ Discount Strategy Tests
-
-•	DiscountServiceTest – validates that each offer code (OFR001, OFR002, OFR003) applies correct discounts, and invalid/NA codes result in no discount.
-
-•	DiscountStrategyTest – unit tests for individual discount strategy implementations.
-
-
-🔍 Test Coverage
-
-•	Business logic is fully tested (shipment grouping, cost calculation, discount application, vehicle assignment).
-
-•	Validation rules are tested (invalid IDs, negative weights, empty package lists, invalid speeds).
-
-•	Edge cases are covered to ensure reliability.
-
-
-Run tests with:
-
-mvn test
-
-
-👩‍💻 Author
+### 👩‍💻 **Author**
 
 Sayantika Kandar

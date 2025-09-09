@@ -1,97 +1,59 @@
-# Courier Service
+Courier Service – Spring Boot Project
+📌 Overview
 
-A Spring Boot application that simulates a "courier service system".  
-It supports "delivery cost estimation" and "delivery time estimation" using discount strategies, shipment creation and vehicle assignment.
+This project implements a Courier Service application in Java (Spring Boot).
+It supports:
 
----
+Delivery Cost Estimation – calculates final delivery cost for packages, applying discounts using offer codes.
 
-## Features
+Delivery Time Estimation – estimates package delivery times by assigning shipments to vehicles with weight limits and availability.
 
-- Cost Estimation Mode
-  - Calculates total delivery cost for each package.
-  - Applies discount strategies (OFR001, OFR002, OFR003) if applicable.
-  - Uses `Strategy Pattern` for extensible discount rules.
+The project uses design patterns such as Builder (for Shipment and Vehicle) and Strategy (for discount calculation).
+It also follows SOLID principles for clean, testable code.
 
-- Time Estimation Mode
-  - Splits packages into shipments based on max carriable weight.
-  - Calculates delivery time for each package and shipment.
-  - Assigns shipments to vehicles based on availability.
-  - Uses `Builder Pattern` for `Shipment` and `Vehicle`.
+📖 Problem Statement
 
-- Error Handling
-  - Custom exceptions via `CourierServiceException`.
-  - Validation for invalid inputs.
+The project solves two main problems:
 
-- Design Principles
-  - Follows SOLID principles.
-  - Implements Builder, Strategy, and DI patterns.
+1️⃣ Delivery Cost Estimation
 
----
+Apply one offer code per package (OFR001, OFR002, OFR003).
 
-## Tech Stack
+Discounts:
 
-- Java (Java 21+ recommended, project `pom.xml` targets `java.version=24`)
-- Spring Boot 3.5.5
-- Maven (build tool)
+OFR001 → 10% if distance < 200 & weight 70–200.
 
----
+OFR002 → 7% if distance 50–150 & weight 100–250.
 
-## Project Structure
+OFR003 → 5% if distance 50–250 & weight 10–150.
 
-com.everesteng.courier
-├── builder # Builders for Shipment and Vehicle
-├── exception # Custom exceptions
-├── model # Core domain models (Package, Shipment, Vehicle)
-├── service # Services (discounts, shipment, vehicle, delivery time, courier orchestration)
-├── strategy # Discount strategies (OFR001, OFR002, OFR003, NoDiscount)
-└── CourierApplication.java # Entry point (CommandLineRunner)
+If no valid code, discount = 0.
 
-Build the project
-mvn clean install
-
-Run the application
-mvn spring-boot:run
-
-Usage
-
-When you run the app, you’ll be prompted to select a mode:
-
-Select Mode: 1 = Delivery Cost Estimation, 2 = Delivery Time Estimation
-
-Mode 1: Delivery Cost Estimation
-
-Input format:
-
-base_delivery_cost no_of_packages
-pkg_id1 pkg_weight1_in_kg distance1_in_km offer_code1
-pkg_id2 pkg_weight2_in_kg distance2_in_km offer_code2
-...
-
-Example:
+Example Input
 
 100 3
 PKG1 5 5 OFR001
 PKG2 15 5 OFR002
 PKG3 10 100 OFR003
 
-Output:
 
-=== Delivery Cost Estimation Results ===
+Example Output
+
 PKG1 0 175
 PKG2 0 275
 PKG3 35 665
 
-Mode 2: Delivery Time Estimation
+2️⃣ Delivery Time Estimation
 
-Input format:
+Vehicles (N) deliver packages at constant speed (S).
 
-base_delivery_cost no_of_packages
-pkg_id1 pkg_weight1_in_kg distance1_in_km offer_code1
-pkg_id2 pkg_weight2_in_kg distance2_in_km offer_code2
-...
-no_of_vehicles max_speed max_carriable_weight
+Each vehicle has a max carriable weight (L).
 
-Example:
+Vehicles are reused after they return to the source.
+
+Shipments maximize vehicle load; heavier shipments are prioritized.
+
+Example Input
 
 100 5
 PKG1 50 30 OFR001
@@ -101,28 +63,105 @@ PKG4 110 60 OFR002
 PKG5 155 95 NA
 2 70 200
 
-Output:
 
-=== Delivery Time Estimation Results ===
+Example Output
+
 PKG1 0 750 3.98
 PKG2 0 1475 1.78
 PKG3 0 2350 1.42
 PKG4 105 1395 0.85
 PKG5 0 2125 4.19
 
-Running Tests
+🏗️ Project Structure
+src/main/java/com/everesteng/courier
+│── CourierApplication.java      # Main Spring Boot app (CLI)
+│
+├── builder/                     # Builder Pattern
+│   ├── ShipmentBuilder.java
+│   └── VehicleBuilder.java
+│
+├── exception/
+│   └── CourierServiceException.java
+│
+├── model/                       # Core domain models
+│   ├── Package.java
+│   ├── Shipment.java
+│   └── Vehicle.java
+│
+├── service/                     # Business services
+│   ├── CourierService.java
+│   ├── DiscountService.java
+│   ├── ShipmentService.java
+│   ├── DeliveryTimeService.java
+│   └── VehicleService.java
+│
+└── strategy/                    # Strategy Pattern for discounts
+    ├── DiscountStrategy.java
+    ├── NoDiscount.java
+    ├── OFR001Discount.java
+    ├── OFR002Discount.java
+    └── OFR003Discount.java
+
+🧪 Testing
+
+Unit tests cover:
+
+Builders: ShipmentBuilderTest, VehicleBuilderTest
+
+Models: PackageTest, ShipmentTest, VehicleTest
+
+Services: CourierServiceTest, DeliveryTimeServiceTest, ShipmentServiceTest, VehicleServiceTest, DiscountServiceTest
+
+Strategies: DiscountStrategyTest
+
+Run all tests:
+
 mvn test
 
-Design Patterns & Principles
-============================
-Builder Pattern → ShipmentBuilder, VehicleBuilder
-Strategy Pattern → Discount strategies (OFR001, OFR002, OFR003, NoDiscount)
-Dependency Injection (DI) → Spring-managed services
+▶️ Running the Application
 
-SOLID Principles
-================
-SRP → Each service handles one responsibility.
-OCP → New discount strategies can be added without modifying existing code.
-LSP → All discount strategies follow the same contract.
-ISP → Interfaces are small and specific (DiscountStrategy).
-DIP → High-level modules depend on abstractions.
+Build the project:
+
+mvn clean install
+
+
+Run with Spring Boot:
+
+mvn spring-boot:run
+
+
+Choose mode when prompted:
+
+1 → Delivery Cost Estimation
+
+2 → Delivery Time Estimation
+
+⚙️ Design Patterns Used
+
+Builder Pattern → ShipmentBuilder, VehicleBuilder.
+
+Strategy Pattern → DiscountStrategy and its implementations.
+
+🏆 SOLID Principles
+
+Single Responsibility → Each service handles one concern.
+
+Open/Closed → Adding new discounts requires only a new strategy class.
+
+Liskov Substitution → Strategies can replace each other.
+
+Interface Segregation → DiscountStrategy defines only needed behavior.
+
+Dependency Injection → Services injected via constructors (Spring Boot).
+
+📦 Requirements
+
+Java 17+
+
+Maven 3.8+
+
+Spring Boot 3.x
+
+👩‍💻 Author
+
+Sayantika Kandar
